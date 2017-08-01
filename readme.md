@@ -18,4 +18,9 @@
 
  This application helps to keep an article site very simple. User can create, update and delete articles.
 
+## Backup Database
+ * Copy `database.sh` file to a system accessible path `cp database.sh /to/the/path/`
+ * Add a crone job to run this
+    `crontab -e`
+    `00 20 * * * /to/the/path/database.sh`
 
