@@ -67,7 +67,7 @@ class ArticleController extends Controller
         $articles = Article::with('author')->get();
         if (count($articles)) {
             foreach ($articles as $article) {
-                $data[] = $this->_makeData($article);
+                $data[] = $this->_makeData($article, true);
             }
             return response()->json($data);
         } else return response()->json('There are no articles yet', 204);
@@ -91,10 +91,10 @@ class ArticleController extends Controller
 
     /**
      * @param Article $article
-     * @param bool $is_full_view
+     * @param bool $is_short_view
      * @return object
      */
-    private function _makeData(Article $article, $is_full_view = false)
+    private function _makeData(Article $article, $is_short_view = false)
     {
         $data = [
             "id" => $article->id,
@@ -103,7 +103,7 @@ class ArticleController extends Controller
             "url" => config('constants.article_url') . $article->url,
             "createdAt" => substr($article->created_at, 10)
         ];
-        if ($is_full_view) $data["summary"] = str_limit($article->content);
+        if ($is_short_view) $data["summary"] = str_limit($article->content);
         else  $data["content"] = $article->content;
 
         return (object)$data;
