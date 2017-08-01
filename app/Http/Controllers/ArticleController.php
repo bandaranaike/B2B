@@ -101,7 +101,7 @@ class ArticleController extends Controller
             "title" => $article->title,
             "author" => $article->author->name,
             "url" => config('constants.article_url') . $article->url,
-            "createdAt" => substr($article->created_at, 10)
+            "createdAt" => substr($article->created_at, 0, 10)
         ];
         if ($is_short_view) $data["summary"] = str_limit($article->content);
         else  $data["content"] = $article->content;
