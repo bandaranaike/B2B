@@ -32,4 +32,5 @@ Route::group(['prefix' => 'article'], function () {
         return view('article.view', ['id' => $id]);
     });
     Route::get('get/{article_id}', 'ArticleController@getArticle')->name('article.get');
+    Route::delete('delete', 'ArticleController@delete')->name('article.delete');
 });

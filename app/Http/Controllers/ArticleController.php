@@ -46,7 +46,7 @@ class ArticleController extends Controller
                 'author_id' => 'required|exists:authors,id',
                 'title' => 'required|max:255',
                 'content' => 'required',
-                'url' => 'required|unique:articles,url',
+                'url' => $this->_method == 'put' ? "required|unique:articles,url,{$this->_article->id}" : "required|unique:articles,url"
             ]);
 
             $this->_article->author_id = $request->author_id;
@@ -65,13 +65,18 @@ class ArticleController extends Controller
     public function getList()
     {
         $articles = Article::with('author')->get();
-        $data = ['c' => count($articles)];
-        foreach ($articles as $article) {
-            $data[] = $this->_makeData($article);
-        }
-        return response()->json($data);
+        if (count($articles)) {
+            foreach ($articles as $article) {
+                $data[] = $this->_makeData($article);
+            }
+            return response()->json($data);
+        } else return response()->json('There are no articles yet', 204);
     }
 
+    /**
+     * @param $url
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getArticle($url)
     {
 
@@ -80,10 +85,15 @@ class ArticleController extends Controller
             $data = $this->_makeData($article);
             return response()->json($data);
         }
-        return response()->json(['m' => 'No article found. Please check the url'], 404);
+        return response()->json('No article found. Please check the url', 404);
 
     }
 
+    /**
+     * @param Article $article
+     * @param bool $is_full_view
+     * @return object
+     */
     private function _makeData(Article $article, $is_full_view = false)
     {
         $data = [
@@ -97,5 +107,14 @@ class ArticleController extends Controller
         else  $data["content"] = $article->content;
 
         return (object)$data;
+    }
+
+    public function delete(Request $request)
+    {
+        $article = Article::find($request->id);
+        if ($article)
+            return response()->json($article->delete());
+        else
+            return response()->json('<p>This article was not found</p>', 404);
     }
 }

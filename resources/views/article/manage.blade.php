@@ -1,30 +1,39 @@
 @extends('template.master')
 @section('title','Manage Article')
 @section('content')
-    @include('template.errors')
-    @include('template.messages')
-    <form method="{{$method}}">
-        <div class="">
-            <label for="author">Author</label>
-            <select name="author_id" id="author" class="">
-                @foreach($authors as $author)
-                    <option value="{{$author->id}}">{{$author->name}}</option>
-                @endforeach
-            </select>
+    <h1>Create new article</h1>
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-4">
+            @include('template.errors')
+            @include('template.messages')
+            <div class="form-group">
+                <span class="text-danger">*</span> Required fields
+            </div>
+            <form method="post">
+                <div class="form-group">
+                    <label for="author">Author <span class="text-danger">*</span></label>
+                    <select name="author_id" id="author" class="form-control">
+                        @foreach($authors as $author)
+                            <option value="{{$author->id}}"{{old('author_id', $article->author_id) == $author->id ? 'selected':''}}>{{$author->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="title">Title <span class="text-danger">*</span></label>
+                    <input type="text" name="title" id="title" value="{{old('title', $article->title)}}" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="url">Url <span class="text-danger">*</span></label>
+                    <input type="text" name="url" id="url" value="{{old('url', $article->url)}}" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="content">Content <span class="text-danger">*</span></label>
+                    <textarea name="content" id="content" class="form-control">{{old('content', $article->content)}}</textarea>
+                </div>
+                {!! csrf_field() !!}
+                <input type="hidden" name="_method" value="{{$method}}"/>
+                <button type="submit" name="save-article" value="1" class="btn btn-primary">Save</button>
+            </form>
         </div>
-        <div class="">
-            <label for="title">Title</label>
-            <input type="text" name="title" id="title" value="{{old('title', $article->title)}}">
-        </div>
-        <div class="">
-            <label for="url">Url</label>
-            <input type="text" name="url" id="url" value="{{old('url', $article->url)}}">
-        </div>
-        <div class="">
-            <label for="content">Content</label>
-            <textarea name="content" id="content">{{old('content', $article->content)}}</textarea>
-        </div>
-        {!! csrf_field() !!}
-        <button type="submit" name="save-article" value="1">Save</button>
-    </form>
+    </div>
 @endsection
